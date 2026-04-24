@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mockup Options</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #0c1322;
+        padding: 48px 32px;
+        font-family: "Inter", sans-serif;
+      }
+      .wrapper {
+        max-width: 980px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 64px;
+      }
+      .option-label {
+        font-family: "Inter", sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #0ea5e9;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .option-label::before {
+        content: "";
+        width: 24px;
+        height: 1px;
+        background: #0ea5e9;
+        display: inline-block;
+      }
+
+      /* ── OPTION A — FOND CLAIR ── */
+      .mockup-a {
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+        font-family: "Inter", sans-serif;
+      }
+      .chrome-a {
+        padding: 10px 16px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dots {
+        display: flex;
+        gap: 5px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .url-bar {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+      .url-inner {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 5px 16px;
+        font-size: 11px;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .app-shell {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+      }
+
+      /* Sidebar claire */
+      .sidebar-a {
+        background: #f8fafc;
+        border-right: 1px solid #e2e8f0;
+        min-height: 420px;
+      }
+      .sidebar-logo {
+        padding: 16px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #0ea5e9, #0369a1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .logo-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #0c1322;
+        line-height: 1.2;
+      }
+      .logo-sub {
+        font-size: 10px;
+        color: #94a3b8;
+      }
+      .nav-item {
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-left: 2px solid transparent;
+        cursor: pointer;
+        font-size: 13px;
+        color: #64748b;
+      }
+      .nav-item.active {
+        background: rgba(14, 165, 233, 0.06);
+        border-left-color: #0ea5e9;
+        color: #0c1322;
+        font-weight: 500;
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: #fee2e2;
+        color: #ef4444;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 1px 6px;
+        border-radius: 100px;
+      }
+      .alert-box {
+        margin: 12px;
+        padding: 12px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+      }
+      .alert-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: #ef4444;
+        margin-bottom: 3px;
+      }
+      .alert-text {
+        font-size: 10px;
+        color: #94a3b8;
+        line-height: 1.4;
+      }
+
+      /* Main clair */
+      .main-a {
+        padding: 20px;
+        background: #fff;
+      }
+      .main-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .main-title {
+        font-family: "Playfair Display", serif;
+        font-size: 18px;
+        font-weight: 800;
+        color: #0c1322;
+      }
+      .main-sub {
+        font-size: 11px;
+        color: #94a3b8;
+        margin-top: 2px;
+      }
+      .new-btn {
+        padding: 8px 16px;
+        background: #0ea5e9;
+        color: #fff;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+      }
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .kpi {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+      .kpi.red {
+        background: #fef2f2;
+        border-color: #fecaca;
+      }
+      .kpi-label {
+        font-size: 10px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+      }
+      .kpi-val {
+        font-family: "Playfair Display", serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: #0c1322;
+        line-height: 1;
+      }
+      .kpi.red .kpi-val {
+        color: #ef4444;
+      }
+      .kpi-sub {
+        font-size: 11px;
+        margin-top: 4px;
+      }
+      .green {
+        color: #22c55e;
+      }
+      .red-t {
+        color: #ef4444;
+      }
+      .orange {
+        color: #f97316;
+      }
+
+      .table-wrap {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .table-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        background: #f8fafc;
+      }
+      .table-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+      }
+      .table-link {
+        font-size: 11px;
+        color: #0ea5e9;
+      }
+      .table-cols {
+        display: grid;
+        grid-template-columns: 0.8fr 1.5fr 0.8fr 1fr;
+        padding: 8px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        background: #f8fafc;
+      }
+      .col-header {
+        font-size: 10px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .table-row {
+        display: grid;
+        grid-template-columns: 0.8fr 1.5fr 0.8fr 1fr;
+        padding: 12px 16px;
+        border-bottom: 1px solid #f8fafc;
+        align-items: center;
+      }
+      .table-row.alert-row {
+        background: #fef9f9;
+      }
+      .row-ref {
+        font-size: 12px;
+        color: #94a3b8;
+        font-family: "Playfair Display", serif;
+      }
+      .row-client {
+        font-size: 13px;
+        color: #0c1322;
+        font-weight: 500;
+      }
+      .row-date {
+        font-size: 12px;
+        color: #64748b;
+      }
+      .row-date.late {
+        color: #ef4444;
+        font-weight: 500;
+      }
+      .status-badge {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 10px;
+        border-radius: 100px;
+        width: fit-content;
+      }
+
+      /* ── OPTION B — AVANT/APRÈS ── */
+      .mockup-b {
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #111827;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+        font-family: "Inter", sans-serif;
+      }
+      .before-after {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 360px;
+      }
+      .before-side {
+        background: #fff;
+        padding: 24px;
+        border-right: 3px solid #0ea5e9;
+        position: relative;
+      }
+      .after-side {
+        background: #0f172a;
+        padding: 24px;
+        position: relative;
+      }
+      .side-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .side-label.before {
+        color: #94a3b8;
+      }
+      .side-label.after {
+        color: #0ea5e9;
+      }
+      .before-label-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #94a3b8;
+      }
+      .after-label-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #0ea5e9;
+        animation: pulse-dot 2s infinite;
+      }
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Excel chaos */
+      .excel-header {
+        background: #217346;
+        padding: 6px 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 4px 4px 0 0;
+        margin-bottom: 0;
+      }
+      .excel-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .excel-grid {
+        border: 1px solid #d0d0d0;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        overflow: hidden;
+        margin-bottom: 12px;
+      }
+      .excel-row {
+        display: grid;
+        grid-template-columns: 0.6fr 1.2fr 0.8fr 0.8fr;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .excel-row.header {
+        background: #e8f4e8;
+      }
+      .excel-cell {
+        padding: 5px 8px;
+        font-size: 10px;
+        color: #333;
+        border-right: 1px solid #e5e5e5;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .excel-row.header .excel-cell {
+        font-weight: 600;
+        color: #217346;
+      }
+      .excel-cell.missing {
+        background: #fff8e6;
+        color: #92400e;
+      }
+      .excel-cell.overdue {
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .whatsapp-wrap {
+        background: #075e54;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .wa-header {
+        background: #128c7e;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .wa-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #25d366;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .wa-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .wa-status {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .wa-body {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        background: #ece5dd;
+      }
+      .wa-msg {
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 10px;
+        line-height: 1.4;
+        max-width: 80%;
+      }
+      .wa-msg.received {
+        background: #fff;
+        color: #333;
+        align-self: flex-start;
+      }
+      .wa-msg.sent {
+        background: #dcf8c6;
+        color: #333;
+        align-self: flex-end;
+      }
+      .wa-time {
+        font-size: 9px;
+        color: #94a3b8;
+        text-align: right;
+        margin-top: 1px;
+      }
+
+      .chaos-note {
+        margin-top: 12px;
+        padding: 8px 12px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 6px;
+        font-size: 11px;
+        color: #991b1b;
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      /* After side — propre */
+      .tool-header-b {
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .tool-title-b {
+        font-size: 13px;
+        font-weight: 600;
+        color: #e2e8f0;
+      }
+      .tool-badge-b {
+        font-size: 10px;
+        color: #22c55e;
+        background: rgba(34, 197, 94, 0.1);
+        padding: 3px 8px;
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .tool-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #22c55e;
+        animation: pulse-dot 2s infinite;
+      }
+      .kpi-row-b {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .kpi-b {
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+      }
+      .kpi-b-val {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1;
+      }
+      .kpi-b-label {
+        font-size: 9px;
+        color: #475569;
+        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .notif-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .notif {
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .notif-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .notif-text {
+        font-size: 11px;
+        color: #94a3b8;
+        line-height: 1.4;
+      }
+      .notif-text strong {
+        color: #e2e8f0;
+        font-weight: 500;
+      }
+      .notif-time {
+        font-size: 10px;
+        color: #334155;
+        margin-left: auto;
+        white-space: nowrap;
+      }
+
+      .divider-ba {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #0ea5e9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+          0 0 0 4px rgba(14, 165, 233, 0.2),
+          0 0 0 8px rgba(14, 165, 233, 0.08);
+        font-size: 16px;
+        color: #fff;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- OPTION A -->
+      <div>
+        <div class="option-label">
+          Option A — Dashboard PME fond clair · Contraste élevé
+        </div>
+        <div class="mockup-a">
+          <!-- Chrome -->
+          <div class="chrome-a">
+            <div class="dots">
+              <div class="dot" style="background: #ff5f57"></div>
+              <div class="dot" style="background: #febc2e"></div>
+              <div class="dot" style="background: #28c840"></div>
+            </div>
+            <div class="url-bar">
+              <div class="url-inner">
+                <svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#22c55e"
+                  stroke-width="2.5"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                gestion.votre-entreprise.fr
+              </div>
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #e0f2fe;
+                border: 1px solid #bae6fd;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                font-weight: 600;
+                color: #0369a1;
+              "
+            >
+              MD
+            </div>
+          </div>
+
+          <!-- App shell -->
+          <div class="app-shell">
+            <!-- Sidebar -->
+            <div class="sidebar-a">
+              <div class="sidebar-logo">
+                <div class="logo-icon">M</div>
+                <div>
+                  <div class="logo-name">MétalPro SAS</div>
+                  <div class="logo-sub">Espace gestion</div>
+                </div>
+              </div>
+              <div style="padding: 8px 0">
+                <div class="nav-item active">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#0ea5e9"
+                    stroke-width="2"
+                  >
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                  </svg>
+                  Tableau de bord
+                </div>
+                <div class="nav-item" style="position: relative">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#94a3b8"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"
+                    />
+                  </svg>
+                  Commandes
+                  <span class="nav-badge">3 en retard</span>
+                </div>
+                <div class="nav-item">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#94a3b8"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 100 8 4 4 0 000-8z"
+                    />
+                  </svg>
+                  Clients
+                </div>
+                <div class="nav-item">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#94a3b8"
+                    stroke-width="2"
+                  >
+                    <rect x="1" y="3" width="15" height="13" />
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                    <circle cx="5.5" cy="18.5" r="2.5" />
+                    <circle cx="18.5" cy="18.5" r="2.5" />
+                  </svg>
+                  Livraisons
+                </div>
+                <div class="nav-item">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#94a3b8"
+                    stroke-width="2"
+                  >
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                  Rapports
+                </div>
+              </div>
+              <div class="alert-box">
+                <div class="alert-title">⚠ 3 relances en retard</div>
+                <div class="alert-text">
+                  CB Industrie (7j), Laforge SA (3j), Solvay (1j)
+                </div>
+              </div>
+            </div>
+
+            <!-- Main -->
+            <div class="main-a">
+              <div class="main-header">
+                <div>
+                  <div class="main-title">Bonjour, Martin 👋</div>
+                  <div class="main-sub">
+                    Mardi 22 avril · 14 demandes actives
+                  </div>
+                </div>
+                <button class="new-btn">+ Nouvelle commande</button>
+              </div>
+
+              <!-- KPIs -->
+              <div class="kpi-grid">
+                <div class="kpi">
+                  <div class="kpi-label">En cours</div>
+                  <div class="kpi-val">14</div>
+                  <div class="kpi-sub green">↑ +3 ce mois</div>
+                </div>
+                <div class="kpi">
+                  <div class="kpi-label">Livrées</div>
+                  <div class="kpi-val">87</div>
+                  <div class="kpi-sub" style="color: #64748b">Ce mois</div>
+                </div>
+                <div class="kpi red">
+                  <div class="kpi-label">En retard</div>
+                  <div class="kpi-val" style="color: #ef4444">3</div>
+                  <div class="kpi-sub red-t">Action requise</div>
+                </div>
+                <div class="kpi">
+                  <div class="kpi-label">CA en attente</div>
+                  <div class="kpi-val" style="font-size: 22px">48 300€</div>
+                  <div class="kpi-sub orange">Non encaissé</div>
+                </div>
+              </div>
+
+              <!-- Table -->
+              <div class="table-wrap">
+                <div class="table-head">
+                  <span class="table-title">Commandes récentes</span>
+                  <span class="table-link">Voir tout →</span>
+                </div>
+                <div class="table-cols">
+                  <span class="col-header">Réf.</span>
+                  <span class="col-header">Client</span>
+                  <span class="col-header">Échéance</span>
+                  <span class="col-header">Statut</span>
+                </div>
+                <div class="table-row">
+                  <span class="row-ref">#2847</span>
+                  <span class="row-client">Laforge Industries</span>
+                  <span class="row-date">24 avr.</span>
+                  <span
+                    class="status-badge"
+                    style="background: #f0fdf4; color: #16a34a"
+                    >✓ Expédiée</span
+                  >
+                </div>
+                <div class="table-row alert-row">
+                  <span class="row-ref">#2846</span>
+                  <span class="row-client">CB Industrie</span>
+                  <span class="row-date late">19 avr. — 3j de retard</span>
+                  <span
+                    class="status-badge"
+                    style="background: #fef2f2; color: #dc2626"
+                    >⚠ En retard</span
+                  >
+                </div>
+                <div class="table-row">
+                  <span class="row-ref">#2845</span>
+                  <span class="row-client">Solvay Transport</span>
+                  <span class="row-date">28 avr.</span>
+                  <span
+                    class="status-badge"
+                    style="background: #fff7ed; color: #ea580c"
+                    >⟳ En cours</span
+                  >
+                </div>
+                <div class="table-row">
+                  <span class="row-ref">#2844</span>
+                  <span class="row-client">Métaux du Nord</span>
+                  <span class="row-date">30 avr.</span>
+                  <span
+                    class="status-badge"
+                    style="background: #f0f9ff; color: #0284c7"
+                    >✔ Confirmée</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPTION B -->
+      <div>
+        <div class="option-label">
+          Option B — Avant / Après · Le chaos vs l'outil
+        </div>
+        <div class="mockup-b">
+          <!-- Chrome -->
+          <div
+            style="
+              padding: 10px 16px;
+              background: #080f1e;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+              display: flex;
+              align-items: center;
+              gap: 10px;
+            "
+          >
+            <div class="dots">
+              <div class="dot" style="background: #ff5f57"></div>
+              <div class="dot" style="background: #febc2e"></div>
+              <div class="dot" style="background: #28c840"></div>
+            </div>
+            <div style="flex: 1; display: flex; justify-content: center">
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.04);
+                  border: 1px solid rgba(255, 255, 255, 0.07);
+                  border-radius: 6px;
+                  padding: 4px 16px;
+                  font-size: 10px;
+                  color: #475569;
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                "
+              >
+                Votre situation aujourd'hui → votre outil demain
+              </div>
+            </div>
+          </div>
+
+          <!-- Before / After -->
+          <div class="before-after" style="position: relative">
+            <!-- Divider arrow -->
+            <div class="divider-ba">→</div>
+
+            <!-- BEFORE -->
+            <div class="before-side">
+              <div class="side-label before">
+                <div class="before-label-dot"></div>
+                Aujourd'hui — le chaos
+              </div>
+
+              <!-- Excel -->
+              <div style="margin-bottom: 12px">
+                <div class="excel-header">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+                    <path
+                      d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
+                    />
+                  </svg>
+                  <span class="excel-title"
+                    >Suivi_commandes_AVRIL_FINAL_v3.xlsx</span
+                  >
+                </div>
+                <div class="excel-grid">
+                  <div class="excel-row header">
+                    <div class="excel-cell">N°</div>
+                    <div class="excel-cell">Client</div>
+                    <div class="excel-cell">Date</div>
+                    <div class="excel-cell">Statut</div>
+                  </div>
+                  <div class="excel-row">
+                    <div class="excel-cell">#2841</div>
+                    <div class="excel-cell">Laforge Ind.</div>
+                    <div class="excel-cell">15/04</div>
+                    <div class="excel-cell missing">???</div>
+                  </div>
+                  <div class="excel-row">
+                    <div class="excel-cell">#2842</div>
+                    <div class="excel-cell">CB Industrie</div>
+                    <div class="excel-cell overdue">12/04</div>
+                    <div class="excel-cell overdue">RETARD !</div>
+                  </div>
+                  <div class="excel-row">
+                    <div class="excel-cell">#2843</div>
+                    <div class="excel-cell">Solvay Trans.</div>
+                    <div class="excel-cell">18/04</div>
+                    <div
+                      class="excel-cell"
+                      style="color: #999; font-style: italic"
+                    >
+                      À relancer
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- WhatsApp -->
+              <div class="whatsapp-wrap">
+                <div class="wa-header">
+                  <div class="wa-avatar">C</div>
+                  <div>
+                    <div class="wa-name">CB Industrie</div>
+                    <div class="wa-status">vu hier à 17h42</div>
+                  </div>
+                </div>
+                <div class="wa-body">
+                  <div class="wa-msg received">
+                    Bonjour, toujours pas reçu la commande #2842 ?
+                  </div>
+                  <div class="wa-msg sent">
+                    Bonjour ! Je vérifie ça tout de suite…
+                  </div>
+                  <div class="wa-msg received">
+                    C'est urgent, on est bloqués en prod.
+                  </div>
+                  <div class="wa-time">Lu ✓✓</div>
+                </div>
+              </div>
+
+              <div class="chaos-note">
+                <span>⏱</span>
+                <span
+                  >Estimation : <strong>6 à 8h/semaine</strong> perdues en
+                  recherche d'infos et relances manuelles</span
+                >
+              </div>
+            </div>
+
+            <!-- AFTER -->
+            <div class="after-side">
+              <div class="side-label after">
+                <div class="after-label-dot"></div>
+                Votre outil — tout sous contrôle
+              </div>
+
+              <div class="tool-header-b">
+                <div>
+                  <div class="tool-title-b">MétalPro — Gestion commandes</div>
+                  <div style="font-size: 10px; color: #475569; margin-top: 2px">
+                    14 commandes actives · Mis à jour il y a 2 min
+                  </div>
+                </div>
+                <div class="tool-badge-b">
+                  <div class="tool-dot"></div>
+                  En direct
+                </div>
+              </div>
+
+              <div class="kpi-row-b">
+                <div class="kpi-b">
+                  <div class="kpi-b-val" style="color: #22c55e">87</div>
+                  <div class="kpi-b-label">Livrées</div>
+                </div>
+                <div class="kpi-b" style="border-color: rgba(239, 68, 68, 0.2)">
+                  <div class="kpi-b-val" style="color: #ef4444">3</div>
+                  <div class="kpi-b-label">En retard</div>
+                </div>
+                <div class="kpi-b">
+                  <div class="kpi-b-val" style="color: #fff">48k€</div>
+                  <div class="kpi-b-label">CA en attente</div>
+                </div>
+              </div>
+
+              <div class="notif-stack">
+                <div
+                  class="notif"
+                  style="
+                    border-color: rgba(239, 68, 68, 0.2);
+                    background: rgba(239, 68, 68, 0.04);
+                  "
+                >
+                  <div
+                    class="notif-icon"
+                    style="background: rgba(239, 68, 68, 0.12)"
+                  >
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ef4444"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                  </div>
+                  <div class="notif-text">
+                    <strong>#2846 CB Industrie</strong> — 3 jours de retard.
+                    Relance automatique envoyée.
+                  </div>
+                  <div class="notif-time">il y a 2h</div>
+                </div>
+                <div class="notif">
+                  <div
+                    class="notif-icon"
+                    style="background: rgba(34, 197, 94, 0.12)"
+                  >
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#22c55e"
+                      stroke-width="2"
+                    >
+                      <path d="M9 11l3 3L22 4" />
+                      <path
+                        d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"
+                      />
+                    </svg>
+                  </div>
+                  <div class="notif-text">
+                    <strong>#2847 Laforge Industries</strong> — Livraison
+                    confirmée. Client notifié automatiquement.
+                  </div>
+                  <div class="notif-time">il y a 4h</div>
+                </div>
+                <div class="notif">
+                  <div
+                    class="notif-icon"
+                    style="background: rgba(14, 165, 233, 0.12)"
+                  >
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#0ea5e9"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                      />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                  </div>
+                  <div class="notif-text">
+                    <strong>Nouvelle commande</strong> — Solvay Transport, 12
+                    palettes, livraison 28 avr.
+                  </div>
+                  <div class="notif-time">ce matin</div>
+                </div>
+                <div
+                  style="
+                    margin-top: 4px;
+                    padding: 10px 14px;
+                    background: rgba(14, 165, 233, 0.06);
+                    border: 1px solid rgba(14, 165, 233, 0.15);
+                    border-radius: 8px;
+                    font-size: 11px;
+                    color: #0ea5e9;
+                    text-align: center;
+                  "
+                >
+                  ↓ <strong>0h/semaine</strong> en relances manuelles — tout est
+                  automatisé
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
