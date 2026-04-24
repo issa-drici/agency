@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { signIn } from "next-auth/react";
 import { registerChatLeadEmail, sendMessage } from "@/app/chat/actions";
 import { BrandLogo } from "@/components/atoms/BrandLogo";
 import { Button } from "@/components/atoms/Button";
+import { ButtonLink } from "@/components/molecules/ButtonLink";
 
 type Message = {
   id: string;
@@ -13,17 +14,8 @@ type Message = {
   content: string;
 };
 
-const QUESTIONS_COUNT = 10;
-
 const INITIAL_QUESTION =
   "Bonjour. Quel est le principal problème qui vous fait perdre du temps aujourd'hui ?";
-
-const NOTES = [
-  { label: "Secteur", value: "Commerce B2B", done: true },
-  { label: "Volume", value: "80-120 cmd/sem.", done: true },
-  { label: "Outil actuel", value: "Excel + WA", done: false },
-  { label: "Suivi temps", value: "En attente...", done: false },
-];
 
 function Dots() {
   return (
@@ -50,11 +42,6 @@ export function ChatInterface() {
   const showEmailStep = questionIndex === 2;
   const disableComposer = isTyping || showEmailStep;
 
-  const progressText = useMemo(
-    () => `Question ${Math.min(questionIndex + 1, QUESTIONS_COUNT)} / ${QUESTIONS_COUNT}`,
-    [questionIndex],
-  );
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
@@ -78,7 +65,7 @@ export function ChatInterface() {
           ...prev,
           { id: crypto.randomUUID(), role: "assistant", content: response.reply },
         ]);
-        setQuestionIndex((prev) => Math.min(prev + 1, QUESTIONS_COUNT - 1));
+        setQuestionIndex((prev) => prev + 1);
         setIsTyping(false);
       }, 500);
     } catch {
@@ -127,7 +114,9 @@ export function ChatInterface() {
           await askNextQuestion(`Email partagé: ${normalized}`);
           return;
         }
-        setInlineError("Impossible d’envoyer le lien pour le moment. Réessayez ou utilisez la page Connexion.");
+        setInlineError(
+          "Impossible d’envoyer le lien pour le moment. Réessayez ou utilisez « Retrouver mon audit » ci-dessus.",
+        );
         return;
       }
 
@@ -142,15 +131,17 @@ export function ChatInterface() {
   return (
     <main className="min-h-screen bg-[#fafaf9]">
       <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-6">
-        <nav className="mb-4 flex items-center justify-between">
+        <nav className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <Link href="/" className="inline-flex items-center" aria-label="CREWDEV — accueil">
             <BrandLogo size="md" />
           </Link>
-          <span className="text-xs text-slate-500">{progressText}</span>
+          <ButtonLink href="/dashboard" variant="textMuted" size="sm" className="px-0">
+            Retrouver mon audit →
+          </ButtonLink>
         </nav>
 
-        <div className="grid gap-0 lg:grid-cols-5">
-          <section className="lg:col-span-3">
+        <div className="mx-auto w-full max-w-3xl">
+          <section>
             <header className="rounded-t-xl border border-slate-200 bg-white px-4 py-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-blue-700 text-xs font-bold text-white">
@@ -213,7 +204,7 @@ export function ChatInterface() {
 
                 {isTyping && (
                   <div className="inline-flex max-w-[85%] items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-                    Expert Issa est en train d&apos;écrire <Dots />
+                    Réponse en cours <Dots />
                   </div>
                 )}
 
@@ -249,40 +240,6 @@ export function ChatInterface() {
               {inlineError ? <p className="mt-2 text-xs text-rose-500">{inlineError}</p> : null}
             </div>
           </section>
-
-          <aside className="hidden border-l border-slate-200 bg-slate-50 p-5 lg:block lg:col-span-2">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500">Notes en cours</p>
-            <div className="mt-4 space-y-3 text-sm">
-              {NOTES.map((item) => (
-                <div key={item.label} className="grid grid-cols-[90px_1fr_16px] gap-2">
-                  <span className="text-slate-500">{item.label}</span>
-                  <span className="text-slate-800">{item.value}</span>
-                  <span className={item.done ? "text-emerald-600" : "text-slate-400"}>
-                    {item.done ? "✓" : "✗"}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6">
-              <div className="mb-1 flex justify-between text-xs text-slate-500">
-                <span>Progression</span>
-                <span>
-                  {Math.min(questionIndex + 1, QUESTIONS_COUNT)} / {QUESTIONS_COUNT}
-                </span>
-              </div>
-              <div className="h-2 rounded-full bg-slate-200">
-                <div
-                  className="h-2 rounded-full bg-sky-500"
-                  style={{
-                    width: `${((Math.min(questionIndex + 1, QUESTIONS_COUNT) / QUESTIONS_COUNT) * 100).toFixed(0)}%`,
-                  }}
-                />
-              </div>
-            </div>
-            <p className="mt-6 text-xs text-slate-500">
-              Ces informations restent confidentielles.
-            </p>
-          </aside>
         </div>
       </div>
     </main>

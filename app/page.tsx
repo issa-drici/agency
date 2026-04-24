@@ -9,10 +9,12 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata: Metadata = {
   title: "CREWDEV · Audit digital gratuit pour dirigeants de PME",
-  description: "Décrivez votre activité en 20 minutes. Audit métier, roadmap priorisée et définition V1, gratuit, sans rendez-vous, sans engagement.",
+  description:
+    "Décrivez votre activité dans un entretien guidé, à votre rythme. Audit métier, roadmap priorisée et définition V1, gratuit, sans rendez-vous, sans engagement.",
   openGraph: {
     title: "CREWDEV · Audit digital gratuit pour dirigeants de PME",
-    description: "Ce que les grands groupes paient 15 000€ pour obtenir, vous l'avez en 20 minutes. Gratuitement.",
+    description:
+      "Ce que les grands groupes paient 15 000€ pour obtenir, vous l'obtenez dans un échange structuré, sans chronomètre. Gratuitement.",
     type: "website",
   },
 };
@@ -63,185 +65,273 @@ function Check({ color = "#0ea5e9" }: { color?: string }) {
 }
 
 /* ─────────────────────────────────────────────────────────
-   MOCKUP: ESPACE GESTION PME (hero)
+   MOCKUP HERO — Option « avant / après » (fichier mockups v2)
 ───────────────────────────────────────────────────────── */
 
-function MockupExtranet() {
-  const nav = [
-    { label: "Tableau de bord", active: true, badge: null, path: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-    { label: "Commandes", active: false, badge: "12", path: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2" },
-    { label: "Clients", active: false, badge: null, path: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 100 8 4 4 0 000-8z" },
-    { label: "Livraisons", active: false, badge: null, path: "M1 3h15v13H1zM16 8l4 2.5V16h-4" },
-    { label: "Rapports", active: false, badge: null, path: "M22 12h-4l-3 9L9 3l-3 9H2" },
-  ];
-  const kpis = [
-    { label: "En cours", val: "14", sub: "↑ +3 ce mois", sc: "#22c55e", red: false },
-    { label: "Livrées", val: "87", sub: "Ce mois", sc: "#22c55e", red: false },
-    { label: "En retard", val: "3", sub: "Action requise", sc: "#ef4444", red: true },
-    { label: "CA en attente", val: "48k€", sub: "Non encaissé", sc: "#fb923c", red: false },
-  ];
-  const rows = [
-    { ref: "#2847", client: "Laforge Industries", date: "24 avr.", status: "Expédiée", sc: "#22c55e", sb: "rgba(34,197,94,0.08)", alert: false },
-    { ref: "#2846", client: "CB Industrie", date: "19 avr. ⚠", status: "En retard", sc: "#ef4444", sb: "rgba(239,68,68,0.08)", alert: true },
-    { ref: "#2845", client: "Solvay Transport", date: "28 avr.", status: "En cours", sc: "#fb923c", sb: "rgba(251,146,60,0.08)", alert: false },
-    { ref: "#2844", client: "Métaux du Nord", date: "30 avr.", status: "Confirmée", sc: "#0ea5e9", sb: "rgba(14,165,233,0.08)", alert: false },
-  ];
-
+function MockupBeforeAfter() {
   return (
     <div
       className="rounded-2xl overflow-hidden"
       style={{
-        border: "1px solid rgba(255,255,255,0.1)",
-        background: "#0f172a",
-        boxShadow: "0 48px 96px rgba(0,0,0,0.6), 0 0 0 1px rgba(14,165,233,0.06)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        background: "#111827",
+        boxShadow: "0 48px 96px rgba(0,0,0,0.55), 0 0 0 1px rgba(14,165,233,0.06)",
         fontFamily: inter.style.fontFamily,
       }}
     >
       {/* Chrome */}
       <div
-        className="flex items-center gap-2 px-4 py-2.5"
+        className="flex items-center gap-2.5 px-4 py-2.5"
         style={{ background: "#080f1e", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
         <div className="flex gap-1.5">
           {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-            <span key={c} className="rounded-full" style={{ width: 9, height: 9, background: c }} />
+            <span key={c} className="rounded-full" style={{ width: 10, height: 10, background: c }} />
           ))}
         </div>
-        <div className="flex-1 flex justify-center">
+        <div className="flex flex-1 justify-center px-1">
           <div
-            className="flex items-center gap-1.5 rounded px-4 py-1 text-[10px]"
+            className="flex max-w-full items-center gap-1.5 rounded-md px-3 py-1 text-[10px] sm:px-4"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.07)",
               color: "#475569",
             }}
           >
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-            gestion.votre-entreprise.fr
+            <span className="truncate">Votre situation aujourd&apos;hui → votre outil demain</span>
           </div>
-        </div>
-        <div
-          className="flex items-center justify-center rounded-full text-[9px] font-semibold"
-          style={{
-            width: 24, height: 24,
-            background: "rgba(14,165,233,0.15)",
-            border: "1px solid rgba(14,165,233,0.2)",
-            color: "#0ea5e9",
-          }}
-        >
-          MD
         </div>
       </div>
 
-      {/* App shell */}
-      <div className="grid" style={{ gridTemplateColumns: "175px 1fr" }}>
+      <div className="relative grid min-h-[320px] grid-cols-1 md:min-h-[360px] md:grid-cols-2">
+        {/* Séparateur central (desktop) */}
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 z-10 hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-base font-bold text-white md:flex"
+          style={{
+            background: "#0ea5e9",
+            boxShadow: "0 0 0 4px rgba(14,165,233,0.2), 0 0 0 8px rgba(14,165,233,0.08)",
+          }}
+          aria-hidden
+        >
+          →
+        </div>
 
-        {/* Sidebar */}
-        <div style={{ background: "#080f1e", borderRight: "1px solid rgba(255,255,255,0.05)", minHeight: 440 }}>
-          <div className="flex items-center gap-2 p-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        {/* AVANT — chaos */}
+        <div className="order-1 border-b-2 border-sky-500 bg-white p-5 md:order-1 md:border-b-0 md:border-r-[3px] md:border-r-sky-500 md:p-6">
+          <div className="mb-4 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+            Aujourd&apos;hui — le chaos
+          </div>
+
+          <div className="mb-3">
             <div
-              className="flex items-center justify-center rounded-md text-[11px] font-bold text-white shrink-0"
-              style={{ width: 26, height: 26, background: "linear-gradient(135deg,#0ea5e9,#0369a1)" }}
+              className="flex items-center gap-1.5 rounded-t px-2.5 py-1.5"
+              style={{ background: "#217346" }}
             >
-              M
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="white">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" />
+              </svg>
+              <span className="text-[11px] font-semibold text-white">Suivi_commandes_AVRIL_FINAL_v3.xlsx</span>
             </div>
-            <div>
-              <div className="text-[11px] font-semibold leading-tight" style={{ color: "#e2e8f0" }}>MétalPro</div>
-              <div className="text-[9px]" style={{ color: "#334155" }}>Espace gestion</div>
-            </div>
-          </div>
-
-          <div className="py-2">
-            {nav.map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2 px-3 py-2 mb-px"
-                style={{
-                  background: item.active ? "rgba(14,165,233,0.08)" : "transparent",
-                  borderLeft: item.active ? "2px solid #0ea5e9" : "2px solid transparent",
-                }}
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={item.active ? "#0ea5e9" : "#2d3f55"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d={item.path} />
-                </svg>
-                <span className="flex-1 text-[12px]" style={{ color: item.active ? "#e2e8f0" : "#2d3f55", fontWeight: item.active ? 500 : 400 }}>{item.label}</span>
-                {item.badge && (
-                  <span className="text-[9px] font-semibold px-1 rounded-full" style={{ background: "rgba(14,165,233,0.15)", color: "#0ea5e9" }}>
-                    {item.badge}
-                  </span>
-                )}
+            <div className="overflow-hidden rounded-b border border-t-0 border-neutral-300" style={{ borderColor: "#d0d0d0" }}>
+              <div className="grid border-b border-neutral-300 bg-[#e8f4e8]" style={{ gridTemplateColumns: "0.6fr 1.2fr 0.8fr 0.8fr" }}>
+                {["N°", "Client", "Date", "Statut"].map((h) => (
+                  <div
+                    key={h}
+                    className="border-r border-neutral-300 px-2 py-1 text-[10px] font-semibold text-[#217346]"
+                  >
+                    {h}
+                  </div>
+                ))}
               </div>
-            ))}
+              {[
+                ["#2841", "Laforge Ind.", "15/04", "???", "missing"],
+                ["#2842", "CB Industrie", "12/04", "RETARD !", "overdue"],
+                ["#2843", "Solvay Trans.", "18/04", "À relancer", "muted"],
+              ].map((row) => (
+                <div
+                  key={row[0]}
+                  className="grid border-b border-neutral-300 last:border-b-0"
+                  style={{ gridTemplateColumns: "0.6fr 1.2fr 0.8fr 0.8fr" }}
+                >
+                  <div className="border-r border-neutral-300 px-2 py-1 text-[10px] text-neutral-800">{row[0]}</div>
+                  <div className="border-r border-neutral-300 px-2 py-1 text-[10px] text-neutral-800">{row[1]}</div>
+                  <div
+                    className="border-r border-neutral-300 px-2 py-1 text-[10px]"
+                    style={{
+                      background: row[4] === "overdue" ? "#fef2f2" : undefined,
+                      color: row[4] === "overdue" ? "#991b1b" : "#333",
+                    }}
+                  >
+                    {row[2]}
+                  </div>
+                  <div
+                    className="px-2 py-1 text-[10px]"
+                    style={{
+                      background: row[4] === "missing" ? "#fff8e6" : row[4] === "overdue" ? "#fef2f2" : undefined,
+                      color: row[4] === "missing" ? "#92400e" : row[4] === "overdue" ? "#991b1b" : "#999",
+                      fontStyle: row[4] === "muted" ? "italic" : undefined,
+                    }}
+                  >
+                    {row[3]}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="mx-2.5 p-2.5 rounded-lg" style={{ background: "rgba(239,68,68,0.05)", border: "1px solid rgba(239,68,68,0.12)" }}>
-            <div className="text-[10px] font-medium mb-0.5" style={{ color: "#ef4444" }}>3 relances en retard</div>
-            <div className="text-[10px] leading-snug" style={{ color: "#334155" }}>CB Industrie, Laforge SA...</div>
+          <div className="overflow-hidden rounded-lg" style={{ background: "#075e54" }}>
+            <div className="flex items-center gap-2 px-3 py-2" style={{ background: "#128c7e" }}>
+              <div
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                style={{ background: "#25d366" }}
+              >
+                C
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-white">CB Industrie</div>
+                <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.6)" }}>
+                  vu hier à 17h42
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5 p-2.5" style={{ background: "#ece5dd" }}>
+              <div className="max-w-[80%] self-start rounded-md bg-white px-2.5 py-1.5 text-[10px] leading-snug text-neutral-800">
+                Bonjour, toujours pas reçu la commande #2842 ?
+              </div>
+              <div className="max-w-[80%] self-end rounded-md px-2.5 py-1.5 text-[10px] leading-snug text-neutral-800" style={{ background: "#dcf8c6" }}>
+                Bonjour ! Je vérifie ça tout de suite…
+              </div>
+              <div className="max-w-[80%] self-start rounded-md bg-white px-2.5 py-1.5 text-[10px] leading-snug text-neutral-800">
+                C&apos;est urgent, on est bloqués en prod.
+              </div>
+              <div className="pr-1 text-right text-[9px] text-slate-400">Lu ✓✓</div>
+            </div>
+          </div>
+
+          <div
+            className="mt-3 flex items-start gap-1.5 rounded-md border px-3 py-2 text-[11px]"
+            style={{ background: "#fef2f2", borderColor: "#fecaca", color: "#991b1b" }}
+          >
+            <span aria-hidden>⏱</span>
+            <span>
+              Estimation : <strong>6 à 8h/semaine</strong> perdues en recherche d&apos;infos et relances manuelles
+            </span>
           </div>
         </div>
 
-        {/* Main */}
-        <div className="p-3.5" style={{ background: "#0f172a" }}>
-          <div className="flex items-center justify-between mb-3">
+        {/* Flèche mobile entre les deux blocs */}
+        <div
+          className="order-2 flex items-center justify-center py-2 md:hidden"
+          style={{ background: "#111827", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+          aria-hidden
+        >
+          <span
+            className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold text-white"
+            style={{ background: "#0ea5e9" }}
+          >
+            →
+          </span>
+        </div>
+
+        {/* APRÈS — outil */}
+        <div className="order-3 bg-[#0f172a] p-5 md:order-2 md:p-6">
+          <div className="mb-4 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em]" style={{ color: "#0ea5e9" }}>
+            <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-sky-500" />
+            Votre outil — tout sous contrôle
+          </div>
+
+          <div
+            className="mb-2.5 flex items-center justify-between rounded-lg border px-3.5 py-3"
+            style={{ background: "#1e293b", borderColor: "rgba(255,255,255,0.08)" }}
+          >
             <div>
-              <div className="text-[14px] font-bold leading-tight" style={{ color: "#e2e8f0", fontFamily: playfair.style.fontFamily }}>Bonjour, Martin</div>
-              <div className="text-[10px] mt-0.5" style={{ color: "#334155" }}>Lundi 21 avr. · 14 demandes actives</div>
+              <div className="text-[13px] font-semibold text-slate-200">MétalPro — Gestion commandes</div>
+              <div className="mt-0.5 text-[10px]" style={{ color: "#475569" }}>
+                14 commandes actives · Mis à jour il y a 2 min
+              </div>
             </div>
-            <div className="text-[10px] font-medium px-3 py-1.5 rounded" style={{ background: "#0ea5e9", color: "#fff" }}>+ Nouvelle</div>
+            <div
+              className="flex shrink-0 items-center gap-1.5 rounded-full px-2 py-1 text-[10px]"
+              style={{ color: "#22c55e", background: "rgba(34,197,94,0.1)" }}
+            >
+              <span className="h-1 w-1 animate-pulse rounded-full bg-emerald-500" />
+              En direct
+            </div>
           </div>
 
-          {/* KPIs */}
-          <div className="grid gap-1.5 mb-3" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
-            {kpis.map((k) => (
-              <div
-                key={k.label}
-                className="rounded-lg p-2.5"
-                style={{
-                  background: "#1e293b",
-                  border: `1px solid ${k.red ? "rgba(239,68,68,0.12)" : "rgba(255,255,255,0.04)"}`,
-                }}
-              >
-                <div className="text-[9px] uppercase tracking-wider mb-1" style={{ color: "#334155" }}>{k.label}</div>
-                <div className="text-[20px] font-extrabold leading-none" style={{ color: k.red ? "#ef4444" : "#fff", fontFamily: playfair.style.fontFamily }}>{k.val}</div>
-                <div className="text-[10px] mt-0.5" style={{ color: k.sc }}>{k.sub}</div>
-              </div>
-            ))}
+          <div className="mb-2.5 grid grid-cols-3 gap-2">
+            <div className="rounded-lg border border-white/10 bg-[#1e293b] px-2 py-3 text-center">
+              <div className={`${playfair.className} text-[22px] font-extrabold leading-none text-emerald-500`}>87</div>
+              <div className="mt-1 text-[9px] uppercase tracking-wide text-slate-500">Livrées</div>
+            </div>
+            <div
+              className="rounded-lg border px-2 py-3 text-center"
+              style={{ background: "#1e293b", borderColor: "rgba(239,68,68,0.2)" }}
+            >
+              <div className={`${playfair.className} text-[22px] font-extrabold leading-none text-red-500`}>3</div>
+              <div className="mt-1 text-[9px] uppercase tracking-wide text-slate-500">En retard</div>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-[#1e293b] px-2 py-3 text-center">
+              <div className={`${playfair.className} text-[22px] font-extrabold leading-none text-white`}>48k€</div>
+              <div className="mt-1 text-[9px] uppercase tracking-wide text-slate-500">CA en attente</div>
+            </div>
           </div>
 
-          {/* Table */}
-          <div className="rounded-xl overflow-hidden" style={{ background: "#1e293b", border: "1px solid rgba(255,255,255,0.04)" }}>
-            <div className="flex justify-between items-center px-3 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-              <span className="text-[11px] font-semibold" style={{ color: "#64748b" }}>Commandes récentes</span>
-              <span className="text-[10px]" style={{ color: "#0ea5e9" }}>Voir tout →</span>
-            </div>
-            <div className="grid px-3 py-1.5" style={{ gridTemplateColumns: "0.8fr 1.4fr 0.7fr 0.8fr", borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-              {["Réf.", "Client", "Livraison", "Statut"].map((h) => (
-                <span key={h} className="text-[9px] uppercase tracking-wider" style={{ color: "#2d3f55" }}>{h}</span>
-              ))}
-            </div>
-            {rows.map((r, i) => (
-              <div
-                key={i}
-                className="grid px-3 py-2 items-center"
-                style={{
-                  gridTemplateColumns: "0.8fr 1.4fr 0.7fr 0.8fr",
-                  borderBottom: i < rows.length - 1 ? "1px solid rgba(255,255,255,0.02)" : "none",
-                  background: r.alert ? "rgba(239,68,68,0.03)" : "transparent",
-                }}
-              >
-                <span className="text-[11px]" style={{ color: "#475569", fontFamily: playfair.style.fontFamily }}>{r.ref}</span>
-                <span className="text-[11px] font-medium" style={{ color: "#cbd5e1" }}>{r.client}</span>
-                <span className="text-[11px]" style={{ color: r.alert ? "#ef4444" : "#475569" }}>{r.date}</span>
-                <span
-                  className="text-[10px] font-medium px-2 py-0.5 rounded-full w-fit"
-                  style={{ color: r.sc, background: r.sb }}
-                >
-                  {r.status}
-                </span>
+          <div className="flex flex-col gap-1.5">
+            <div
+              className="flex items-center gap-2.5 rounded-lg border px-3.5 py-2.5"
+              style={{ background: "rgba(239,68,68,0.04)", borderColor: "rgba(239,68,68,0.2)" }}
+            >
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md" style={{ background: "rgba(239,68,68,0.12)" }}>
+                <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth={2}>
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
               </div>
-            ))}
+              <div className="min-w-0 flex-1 text-[11px] leading-snug text-slate-400">
+                <strong className="font-medium text-slate-200">#2846 CB Industrie</strong> — 3 jours de retard. Relance
+                automatique envoyée.
+              </div>
+              <span className="shrink-0 whitespace-nowrap text-[10px] text-slate-600">il y a 2h</span>
+            </div>
+            <div className="flex items-center gap-2.5 rounded-lg border border-white/10 bg-[#1e293b] px-3.5 py-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md" style={{ background: "rgba(34,197,94,0.12)" }}>
+                <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth={2}>
+                  <path d="M9 11l3 3L22 4" />
+                  <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                </svg>
+              </div>
+              <div className="min-w-0 flex-1 text-[11px] leading-snug text-slate-400">
+                <strong className="font-medium text-slate-200">#2847 Laforge Industries</strong> — Livraison confirmée.
+                Client notifié automatiquement.
+              </div>
+              <span className="shrink-0 whitespace-nowrap text-[10px] text-slate-600">il y a 4h</span>
+            </div>
+            <div className="flex items-center gap-2.5 rounded-lg border border-white/10 bg-[#1e293b] px-3.5 py-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md" style={{ background: "rgba(14,165,233,0.12)" }}>
+                <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth={2}>
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+              </div>
+              <div className="min-w-0 flex-1 text-[11px] leading-snug text-slate-400">
+                <strong className="font-medium text-slate-200">Nouvelle commande</strong> — Solvay Transport, 12
+                palettes, livraison 28 avr.
+              </div>
+              <span className="shrink-0 whitespace-nowrap text-[10px] text-slate-600">ce matin</span>
+            </div>
+            <div
+              className="mt-1 rounded-lg border px-3.5 py-2.5 text-center text-[11px]"
+              style={{
+                background: "rgba(14,165,233,0.06)",
+                borderColor: "rgba(14,165,233,0.15)",
+                color: "#0ea5e9",
+              }}
+            >
+              ↓ <strong>0h/semaine</strong> en relances manuelles — tout est automatisé
+            </div>
           </div>
         </div>
       </div>
@@ -557,7 +647,7 @@ export default function Home() {
               <br /><br />
               Ce que les grands groupes paient{" "}
               <strong style={{ color: "#e2e8f0", fontWeight: 500 }}>15 000€ à des cabinets</strong>{" "}
-              pour identifier, vous l&apos;avez en 20 minutes.{" "}
+              pour identifier, vous l&apos;obtenez dans un entretien fluide, à votre rythme.{" "}
               <strong style={{ color: "#0ea5e9", fontWeight: 500 }}>Gratuitement. Sans rendez-vous.</strong>
             </p>
 
@@ -573,7 +663,7 @@ export default function Home() {
                 Identifier ce qui me coûte de l&apos;argent →
               </ButtonLink>
               <div className="flex items-center gap-6 flex-wrap justify-center">
-                {["Gratuit", "20 minutes", "Sans engagement"].map((h) => (
+                {["Gratuit", "À votre rythme", "Sans engagement"].map((h) => (
                   <span key={h} className="flex items-center gap-1.5 text-[12px]" style={{ color: "#475569" }}>
                     <span style={{ color: "#0ea5e9" }}>✓</span> {h}
                   </span>
@@ -599,7 +689,7 @@ export default function Home() {
               <span className="rounded-full animate-pulse" style={{ width: 6, height: 6, background: "#22c55e" }} />
               Votre outil livré clé en main
             </div>
-            <MockupExtranet />
+            <MockupBeforeAfter />
             <div
               className="absolute -bottom-4 -left-6 z-20 flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg"
               style={{
@@ -675,7 +765,7 @@ export default function Home() {
             <div>
               <Tag color="#0ea5e9" bg="rgba(14,165,233,0.08)">01 · Audit métier</Tag>
               <h2 className={`${playfair.className} font-extrabold leading-tight tracking-tight text-[#0c1322] mt-5 mb-5`} style={{ fontSize: "clamp(26px,3.5vw,40px)" }}>
-                En 20 minutes, on met un chiffre sur ce que vous perdez chaque mois.
+                Quelques questions bien posées suffisent pour chiffrer ce que vous perdez chaque mois.
               </h2>
               <p className="text-[15px] leading-[1.75] mb-7" style={{ color: "#57534e" }}>
                 Pas une liste de fonctionnalités génériques. Une analyse précise de vos processus, de vos outils actuels et des points de friction qui coûtent du temps et de l&apos;argent chaque semaine, sans que vous le voyiez.
@@ -834,7 +924,9 @@ export default function Home() {
                 <p className="text-[14px] leading-[1.75] max-w-[600px]" style={{ color: "#64748b" }}>
                   Un entretien structuré vous pose les bonnes questions, une par une. Pas de formulaire à remplir. Pas de rendez-vous à caler. Vous répondez quand vous voulez.
                 </p>
-                <div className="mt-3"><Tag>~20 minutes</Tag></div>
+                <div className="mt-3">
+                  <Tag>Conversation fluide</Tag>
+                </div>
               </div>
             </div>
             <MockupChatFullWidth />
@@ -867,14 +959,18 @@ export default function Home() {
         <div className="max-w-[1140px] mx-auto px-8 py-24">
           <div className="bg-[#0c1322] rounded-2xl px-14 py-20 text-center relative overflow-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none" style={{ width: 500, height: 300, background: "radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%)" }} />
-            <p className="text-[12px] uppercase tracking-[0.15em] mb-5 relative" style={{ color: "#475569" }}>
+            <p className="relative mb-5 text-[12px] font-medium uppercase tracking-[0.15em] text-slate-300">
               Ce que les grands groupes paient des mois à des cabinets pour obtenir
             </p>
             <h2 className={`${playfair.className} font-black tracking-tight text-white mb-3 leading-tight relative`} style={{ fontSize: "clamp(28px,4vw,46px)" }}>
               Vous l&apos;avez ici,<br />gratuitement, sans rendez-vous.
             </h2>
-            <p className="text-[14px] italic mb-3 relative" style={{ color: "#475569" }}>Le seul risque, c&apos;est de continuer à reporter.</p>
-            <p className="text-[12px] tracking-widest mb-10 relative" style={{ color: "#334155" }}>Gratuit · 20 minutes · Sans engagement</p>
+            <p className="relative mb-3 text-[15px] italic leading-relaxed text-slate-200">
+              Le seul risque, c&apos;est de continuer à reporter.
+            </p>
+            <p className="relative mb-10 text-[12px] font-medium tracking-widest text-slate-300">
+              Gratuit · À votre rythme · Sans engagement
+            </p>
             <ButtonLink
               href="/chat"
               variant="accent"
@@ -889,14 +985,19 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-[#0c1322] border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-        <div className="max-w-[1140px] mx-auto px-8 py-6 flex items-center justify-between flex-wrap gap-4">
-          <Link href="/" className="inline-flex opacity-90 hover:opacity-100" aria-label="CREWDEV — accueil">
-            <BrandLogo size="sm" className="opacity-75" />
+      <footer className="border-t border-[#e7e5e4] bg-[#fafaf9]">
+        <div className="mx-auto flex max-w-[1140px] flex-wrap items-center justify-between gap-4 px-8 py-8">
+          <Link href="/" className="inline-flex" aria-label="CREWDEV — accueil">
+            <BrandLogo size="sm" />
           </Link>
-          <p className="text-[11px]" style={{ color: "#334155" }}>
+          <p className="text-[11px] text-slate-600">
             Développé par Issa Drici, Freelance React / Next.js ·{" "}
-            <a href="#" className="underline underline-offset-2" style={{ color: "#475569" }}>LinkedIn</a>
+            <a
+              href="#"
+              className="font-medium text-sky-600 underline underline-offset-2 transition hover:text-sky-500"
+            >
+              LinkedIn
+            </a>
           </p>
         </div>
       </footer>
