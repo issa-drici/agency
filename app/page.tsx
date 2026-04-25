@@ -990,15 +990,23 @@ export default function Home() {
           <Link href="/" className="inline-flex" aria-label="CREWDEV — accueil">
             <BrandLogo size="sm" />
           </Link>
-          <p className="text-[11px] text-slate-600">
-            Développé par Issa Drici, Freelance React / Next.js ·{" "}
-            <a
-              href="#"
-              className="font-medium text-sky-600 underline underline-offset-2 transition hover:text-sky-500"
-            >
-              LinkedIn
-            </a>
-          </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-slate-600">
+            <Link href="/privacy" className="underline underline-offset-2 hover:text-sky-600">
+              Politique de confidentialite
+            </Link>
+            <Link href="/terms" className="underline underline-offset-2 hover:text-sky-600">
+              Conditions d'utilisation
+            </Link>
+            <Link href="/data-deletion" className="underline underline-offset-2 hover:text-sky-600">
+              Suppression des donnees
+            </Link>
+            <Link href="/legal-notice" className="underline underline-offset-2 hover:text-sky-600">
+              Mentions legales
+            </Link>
+            <Link href="/contact" className="underline underline-offset-2 hover:text-sky-600">
+              Contact
+            </Link>
+          </div>
         </div>
       </footer>
 
