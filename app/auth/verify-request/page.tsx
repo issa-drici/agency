@@ -13,10 +13,10 @@ export default function VerifyRequestPage() {
 
         <div className="flex justify-center">
           <section className="w-full max-w-[420px] rounded-xl border border-stone-200 bg-white p-6 sm:p-10">
-            <h1 className="font-serif text-[28px] text-[#0c1322]">Vérifiez votre boîte mail</h1>
+            <h1 className="font-serif text-[28px] text-[#0c1322]">Lien envoyé</h1>
             <p className="mt-2 text-sm text-slate-600">
-              Un lien de connexion vous a été envoyé. Il expire après quelques minutes. Vous pouvez
-              fermer cet onglet.
+              Un lien de connexion vous a été envoyé sur WhatsApp. Il expire dans 24 heures. Vous
+              pouvez fermer cet onglet.
             </p>
             <p className="mt-6 text-sm text-slate-600">
               <Link href="/login" className="font-medium text-sky-600 hover:text-sky-500">

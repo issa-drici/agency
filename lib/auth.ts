@@ -30,6 +30,7 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider !== "email") return true;
       const email = user.email?.toLowerCase();
       if (!email) return false;
+      /** Inclut les comptes créés depuis WhatsApp (`phone:+33…@whatsapp.local`). */
       const existing = await prisma.user.findUnique({ where: { email } });
       return existing !== null;
     },

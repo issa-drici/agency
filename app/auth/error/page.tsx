@@ -23,7 +23,7 @@ const ERROR_MESSAGES: Record<string, ErrorCopy> = {
   EmailSignin: {
     title: "Demande non traitée",
     description:
-      "La demande de connexion n’a pas pu être envoyée. Vérifiez le format de l’adresse et réessayez depuis la page de connexion.",
+      "La demande de connexion n’a pas pu être envoyée. Vérifiez votre numéro et réessayez.",
   },
   Callback: {
     title: "Connexion interrompue",

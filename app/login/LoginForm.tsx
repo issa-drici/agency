@@ -2,51 +2,49 @@
 
 import Link from "next/link";
 import { type SyntheticEvent, useState } from "react";
-import { signIn } from "next-auth/react";
+import { sendLoginLink } from "@/app/login/actions";
 import { Button } from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Input";
 import { FormField } from "@/components/molecules/FormField";
+import { isValidLoginPhoneNormalized, normalizeLoginPhone } from "@/lib/login-phone";
 
 type LoginFormProps = {
   theme?: "dark" | "light";
 };
 
-const NEUTRAL_SENT_MESSAGE =
-  "Si un compte est associé à cette adresse, vous recevrez sous peu un message contenant un lien de connexion. Pensez à vérifier vos courriers indésirables.";
+const WHATSAPP_SENT_MESSAGE =
+  "Un lien de connexion vous a été envoyé sur WhatsApp. Vérifiez vos messages.";
+
+function validatePhoneClient(raw: string): boolean {
+  const normalized = normalizeLoginPhone(raw);
+  return isValidLoginPhoneNormalized(normalized);
+}
 
 export function LoginForm({ theme = "dark" }: LoginFormProps) {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
-  /** Indique qu’un lien a réellement été généré (pour l’indication dev sans fuiter l’absence de compte). */
-  const [linkIssued, setLinkIssued] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
   async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     setSent(false);
-    setLinkIssued(false);
     setIsPending(true);
 
     try {
-      const result = await signIn("email", {
-        email: email.trim().toLowerCase(),
-        callbackUrl: "/dashboard",
-        redirect: false,
-      });
-
-      if (result?.error) {
-        if (result.error === "AccessDenied") {
-          setLinkIssued(false);
-          setSent(true);
-          return;
-        }
-        setError("Impossible de traiter la demande pour le moment. Réessayez plus tard.");
+      if (!validatePhoneClient(phone)) {
+        setError("Le numéro doit commencer par + et comporter entre 8 et 15 chiffres (ex. +33 6 12 34 56 78).");
         return;
       }
 
-      setLinkIssued(true);
+      const result = await sendLoginLink(phone);
+
+      if (!result.ok) {
+        setError(result.error ?? "Impossible de traiter la demande pour le moment. Réessayez plus tard.");
+        return;
+      }
+
       setSent(true);
     } finally {
       setIsPending(false);
@@ -55,14 +53,16 @@ export function LoginForm({ theme = "dark" }: LoginFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <FormField htmlFor="email" label="Adresse email" required>
+      <FormField htmlFor="phone" label="Votre numéro WhatsApp" required>
         <Input
-          id="email"
-          name="email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="vous@entreprise.fr"
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          value={phone}
+          onChange={(event) => setPhone(event.target.value)}
+          placeholder="+33 6 12 34 56 78"
           required
           disabled={sent}
         />
@@ -71,16 +71,9 @@ export function LoginForm({ theme = "dark" }: LoginFormProps) {
       {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 
       {sent ? (
-        <div className={`space-y-3 text-sm ${theme === "light" ? "text-slate-600" : "text-slate-400"}`}>
-          <p>{NEUTRAL_SENT_MESSAGE}</p>
-          {linkIssued && process.env.NODE_ENV === "development" ? (
-            <p className="rounded-md border border-stone-200 bg-stone-50 p-3 text-xs text-slate-600">
-              <strong className="font-medium text-slate-800">Mode développement :</strong> sans Resend, le
-              lien peut aussi s’afficher dans le terminal où tourne{" "}
-              <code className="rounded bg-white px-1 text-stone-800">pnpm dev</code>.
-            </p>
-          ) : null}
-        </div>
+        <p className={`text-sm ${theme === "light" ? "text-slate-600" : "text-slate-400"}`}>
+          {WHATSAPP_SENT_MESSAGE}
+        </p>
       ) : null}
 
       <Button type="submit" disabled={isPending || sent} variant="accent" fullWidth>

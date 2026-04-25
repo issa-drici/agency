@@ -10,5 +10,9 @@ export default defineConfig({
   },
   datasource: {
     url: process.env["DATABASE_URL"],
+    /** Si défini : base PostgreSQL vide (shadow), requise pour `prisma migrate diff --from-migrations …`. https://pris.ly/d/migrate-shadow */
+    ...(process.env["SHADOW_DATABASE_URL"]
+      ? { shadowDatabaseUrl: process.env["SHADOW_DATABASE_URL"] }
+      : {}),
   },
 });

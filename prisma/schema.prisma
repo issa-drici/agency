@@ -14,6 +14,7 @@ model User {
   id            String    @id @default(uuid()) @db.Uuid
   name          String?   @map("first_name")
   email         String    @unique
+  phone         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
   createdAt     DateTime  @default(now()) @map("created_at")
@@ -22,6 +23,62 @@ model User {
   sessions Session[]
 
   @@map("users")
+}
+
+/// Messages WhatsApp / agent (identifiants par numéro prospect E.164).
+model Conversation {
+  id        String   @id @default(uuid()) @db.Uuid
+  clientId  String   @map("client_id")
+  role      String
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([clientId])
+  @@map("conversations")
+}
+
+model NotePO {
+  id        String   @id @default(uuid()) @db.Uuid
+  clientId  String   @map("client_id")
+  contenu   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([clientId])
+  @@map("notes_po")
+}
+
+model UserStory {
+  id                  String   @id @default(uuid()) @db.Uuid
+  clientId            String   @map("client_id")
+  titre               String   @db.VarChar(200)
+  description         String?  @db.Text
+  criteresAcceptance  String?  @db.Text @map("criteres_acceptance")
+  contexte            String?  @db.Text
+  horsScope           String?  @db.Text @map("hors_scope")
+  dependances         String?  @db.Text
+  type                String?  @db.VarChar(20)
+  specsTechniques     String?  @db.Text @map("specs_techniques")
+  usParentId          String?  @db.Uuid @map("us_parent_id")
+  statut              String   @default("backlog")
+  priorite            Int      @default(0)
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@index([clientId])
+  @@map("user_stories")
+}
+
+/// Audit / roadmap / V1 (JSON stringifié), un enregistrement par prospect WhatsApp.
+model Livrable {
+  id        String   @id @default(uuid()) @db.Uuid
+  clientId  String   @unique @map("client_id")
+  audit     String?  @db.Text
+  roadmap   String?  @db.Text
+  v1        String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("livrables")
 }
 
 /// Sessions NextAuth (JWT + adapter : lignes peu utilisées, mais requises par l’adaptateur).

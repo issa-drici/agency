@@ -30,7 +30,7 @@ export default async function LoginPage() {
 
             <h1 className="font-serif text-[28px] text-[#0c1322]">Retrouvez votre espace</h1>
             <p className="mt-2 text-sm text-slate-600">
-              Entrez l&apos;email utilisé lors de votre entretien.
+              Entrez le numéro WhatsApp utilisé lors de votre entretien.
             </p>
 
             <div className="mt-8">
