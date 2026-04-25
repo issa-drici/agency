@@ -1,112 +1,108 @@
-import twilio from "twilio";
 import { chat } from "@/lib/agents/po";
-import { prisma } from "@/lib/db";
-import { WHATSAPP_FROM, twilioClient } from "@/lib/twilio";
+type MetaWebhookPayload = {
+  object?: string;
+  entry?: Array<{
+    changes?: Array<{
+      value?: {
+        messages?: Array<{
+          from?: string;
+          text?: { body?: string };
+          type?: string;
+        }>;
+        metadata?: { phone_number_id?: string };
+      };
+    }>;
+  }>;
+};
 
-const PREMIER_MESSAGE_TAG = "[PREMIER MESSAGE DU PROSPECT] ";
+export async function GET(request: Request): Promise<Response> {
+  const { searchParams } = new URL(request.url);
+  const hubMode = searchParams.get("hub.mode");
+  const hubVerifyToken = searchParams.get("hub.verify_token");
+  const hubChallenge = searchParams.get("hub.challenge");
 
-const TWIML_EMPTY = "<Response></Response>";
-const TWIML_HEADERS = { "Content-Type": "text/xml; charset=utf-8" };
+  const expectedToken = process.env.META_WEBHOOK_VERIFY_TOKEN;
 
-const GENERIC_ERROR_WA =
-  "Désolé, une erreur s'est produite. Réessayez dans quelques instants.";
-
-function formDataToParams(formData: FormData): Record<string, string> {
-  const params: Record<string, string> = {};
-  for (const [key, value] of formData.entries()) {
-    params[key] = typeof value === "string" ? value : value.name;
+  if (
+    hubMode === "subscribe" &&
+    hubVerifyToken &&
+    expectedToken &&
+    hubVerifyToken === expectedToken
+  ) {
+    return new Response(hubChallenge ?? "", {
+      status: 200,
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
   }
-  return params;
+
+  return new Response("Forbidden", { status: 403 });
 }
 
-function whatsappClientId(from: string): string {
-  return from.replace(/^whatsapp:/i, "");
-}
+async function sendMetaWhatsAppMessage(
+  phoneNumberId: string,
+  to: string,
+  body: string,
+): Promise<void> {
+  const token = process.env.META_WHATSAPP_TOKEN;
+  if (!token) {
+    throw new Error("META_WHATSAPP_TOKEN manquant");
+  }
 
-/** Même identifiant WhatsApp (E.164), sans tenir compte du préfixe `whatsapp:` ni de la casse. */
-function whatsappRecipientKey(addr: string): string {
-  return addr.trim().toLowerCase().replace(/^whatsapp:/i, "");
-}
+  const response = await fetch(
+    `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to,
+        type: "text",
+        text: { body },
+      }),
+    },
+  );
 
-function isSameWhatsAppRecipient(a: string, b: string): boolean {
-  return whatsappRecipientKey(a) === whatsappRecipientKey(b);
-}
-
-/**
- * Twilio refuse `from === to` (erreur 63031). Il faut que `TWILIO_WHATSAPP_FROM` soit le numéro
- * **sandbox / Business** Twilio (ex. whatsapp:+14155238886), jamais le numéro du prospect.
- */
-async function sendWhatsApp(to: string, body: string): Promise<void> {
-  const from = WHATSAPP_FROM?.trim();
-  if (!from) {
-    console.warn(
-      "[whatsapp webhook] TWILIO_WHATSAPP_FROM manquant : impossible d’envoyer la réponse WhatsApp.",
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Echec envoi Meta WhatsApp (${response.status}): ${errorBody}`,
     );
-    return;
   }
-  if (isSameWhatsAppRecipient(from, to)) {
-    console.warn(
-      "[whatsapp webhook] Envoi ignoré : TWILIO_WHATSAPP_FROM est identique au destinataire (From). " +
-        "Corrigez .env : FROM = numéro Twilio sandbox / ligne WhatsApp Business, pas le numéro client.",
-    );
-    return;
-  }
-  await twilioClient.messages.create({
-    from,
-    to,
-    body,
-  });
 }
 
 export async function POST(request: Request): Promise<Response> {
-  const formData = await request.formData();
-  const params = formDataToParams(formData);
-
-  const from = params.From ?? "";
-  const messageBody = params.Body ?? "";
-
-  const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const signature = request.headers.get("x-twilio-signature") ?? "";
-
-  if (process.env.NODE_ENV !== "development") {
-    if (!authToken) {
-      return new Response("Configuration Twilio incomplète.", { status: 500 });
-    }
-    const valid = twilio.validateRequest(
-      authToken,
-      signature,
-      request.url,
-      params,
-    );
-    if (!valid) {
-      return new Response("Forbidden", { status: 403 });
-    }
-  }
-
-  const twilioTo = from;
-  const clientId = from ? whatsappClientId(from) : "";
-
-  if (!twilioTo || !clientId) {
-    return new Response(TWIML_EMPTY, { status: 200, headers: TWIML_HEADERS });
-  }
-
   try {
-    const messageCount = await prisma.conversation.count({
-      where: { clientId },
-    });
-    const textePourChat =
-      messageCount === 0 ? `${PREMIER_MESSAGE_TAG}${messageBody}` : messageBody;
+    const payload = (await request.json()) as MetaWebhookPayload;
+    const value = payload.entry?.[0]?.changes?.[0]?.value;
+    const messages = value?.messages;
 
-    const { response } = await chat(clientId, textePourChat);
-    await sendWhatsApp(twilioTo, response);
-  } catch (err) {
-    console.error("[whatsapp webhook] chat ou envoi Twilio:", err);
-    try {
-      await sendWhatsApp(twilioTo, GENERIC_ERROR_WA);
-    } catch (sendErr) {
-      console.error("[whatsapp webhook] envoi message d’erreur:", sendErr);
+    if (!messages || messages.length === 0) {
+      return new Response("OK", { status: 200 });
     }
+
+    const incomingMessage = messages[0];
+    if (incomingMessage.type !== "text") {
+      return new Response("OK", { status: 200 });
+    }
+
+    const from = incomingMessage.from ?? "";
+    const messageBody = incomingMessage.text?.body ?? "";
+    const phoneNumberId = value?.metadata?.phone_number_id ?? "";
+
+    if (!from || !messageBody || !phoneNumberId) {
+      return new Response("OK", { status: 200 });
+    }
+
+    const clientId = `+${from}`;
+    const { response: agentResponse } = await chat(clientId, messageBody);
+    await sendMetaWhatsAppMessage(phoneNumberId, from, agentResponse);
+  } catch (error) {
+    console.error("[whatsapp webhook] erreur interne Meta:", error);
   }
 
-  return new Response(TWIML_EMPTY, { status: 200, headers: TWIML_HEADERS });
+  // Meta attend un 200 même en cas d'erreur interne.
+  return new Response("OK", { status: 200 });
 }
