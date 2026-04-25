@@ -43,7 +43,7 @@ export async function registerChatLeadEmail(
 export async function sendMessage(input: SendMessageInput) {
   const { message, questionIndex } = input;
 
-  // TODO: brancher ici l'API Crewdev / Anthropic.
+  // TODO: brancher ici l'API Fortyn / Anthropic.
   // Pour le MVP: aucune persistance locale des messages/conversations.
   void message;
   const nextQuestion = QUESTIONS[Math.min(questionIndex + 1, QUESTIONS.length - 1)];

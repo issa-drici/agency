@@ -132,7 +132,7 @@ export function ChatInterface() {
     <main className="min-h-screen bg-[#fafaf9]">
       <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-6">
         <nav className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <Link href="/" className="inline-flex items-center" aria-label="CREWDEV — accueil">
+          <Link href="/" className="inline-flex items-center" aria-label="Fortyn — accueil">
             <BrandLogo size="md" />
           </Link>
           <ButtonLink href="/dashboard" variant="textMuted" size="sm" className="px-0">

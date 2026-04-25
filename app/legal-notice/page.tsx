@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LegalFooter } from "@/components/organisms/LegalFooter";
 import { LegalTopNav } from "@/components/organisms/LegalTopNav";
 
 export const metadata: Metadata = {
@@ -69,6 +70,7 @@ export default function LegalNoticePage() {
           <p>Pour toute demande legale ou administrative : contact@fortyn.fr</p>
         </section>
       </main>
+      <LegalFooter />
     </>
   );
 }

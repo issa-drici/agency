@@ -115,7 +115,7 @@ export default async function DashboardPage() {
     <main className="min-h-screen bg-[#fafaf9] text-slate-900">
       <div className="mx-auto flex max-w-7xl">
         <aside className="hidden min-h-screen w-72 border-r border-stone-200 bg-white p-6 lg:flex lg:flex-col">
-          <Link href="/" className="inline-flex" aria-label="CREWDEV — accueil">
+          <Link href="/" className="inline-flex" aria-label="Fortyn — accueil">
             <BrandLogo size="md" />
           </Link>
           <nav className="mt-8 space-y-1 text-sm">
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
 
         <section className="w-full p-5 sm:p-8">
           <div className="mb-6 flex items-center lg:hidden">
-            <Link href="/" className="inline-flex" aria-label="CREWDEV — accueil">
+            <Link href="/" className="inline-flex" aria-label="Fortyn — accueil">
               <BrandLogo size="md" />
             </Link>
           </div>

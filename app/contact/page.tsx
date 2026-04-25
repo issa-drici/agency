@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LegalFooter } from "@/components/organisms/LegalFooter";
 import { LegalTopNav } from "@/components/organisms/LegalTopNav";
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default function ContactPage() {
           .
         </p>
       </main>
+      <LegalFooter />
     </>
   );
 }

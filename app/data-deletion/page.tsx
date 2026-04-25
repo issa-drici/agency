@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LegalFooter } from "@/components/organisms/LegalFooter";
 import { LegalTopNav } from "@/components/organisms/LegalTopNav";
 
 export const metadata: Metadata = {
@@ -67,6 +68,7 @@ export default function DataDeletionPage() {
           </p>
         </section>
       </main>
+      <LegalFooter />
     </>
   );
 }

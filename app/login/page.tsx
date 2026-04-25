@@ -21,7 +21,7 @@ export default async function LoginPage() {
               <Link
                 href="/"
                 className="inline-flex items-center gap-3"
-                aria-label="CREWDEV — retour à l&apos;accueil"
+                aria-label="Fortyn — retour à l&apos;accueil"
               >
                 <BrandLogo size="md" priority />
                 <span className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-sky-500" />

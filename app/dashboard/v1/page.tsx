@@ -18,7 +18,7 @@ export default async function V1Page() {
     <main className="min-h-screen bg-[#fafaf9] text-slate-900">
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <Link href="/" className="inline-flex" aria-label="CREWDEV — accueil">
+          <Link href="/" className="inline-flex" aria-label="Fortyn — accueil">
             <BrandLogo size="md" />
           </Link>
           <ButtonLink href="/dashboard" variant="textMuted" size="inline">

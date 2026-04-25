@@ -8,11 +8,11 @@ const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700", "800", "
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata: Metadata = {
-  title: "CREWDEV · Audit digital gratuit pour dirigeants de PME",
+  title: "Fortyn · Audit digital gratuit pour dirigeants de PME",
   description:
     "Décrivez votre activité dans un entretien guidé, à votre rythme. Audit métier, roadmap priorisée et définition V1, gratuit, sans rendez-vous, sans engagement.",
   openGraph: {
-    title: "CREWDEV · Audit digital gratuit pour dirigeants de PME",
+    title: "Fortyn · Audit digital gratuit pour dirigeants de PME",
     description:
       "Ce que les grands groupes paient 15 000€ pour obtenir, vous l'obtenez dans un échange structuré, sans chronomètre. Gratuitement.",
     type: "website",
@@ -604,7 +604,7 @@ export default function Home() {
       {/* ── NAV ── */}
       <nav className="sticky top-0 z-50 border-b border-[#e7e5e4] backdrop-blur-md" style={{ background: "rgba(250,250,249,0.92)" }}>
         <div className="max-w-[1140px] mx-auto px-8 h-[60px] flex items-center justify-between">
-          <Link href="/" className="inline-flex items-center" aria-label="CREWDEV — accueil">
+          <Link href="/" className="inline-flex items-center" aria-label="Fortyn — accueil">
             <BrandLogo size="md" priority />
           </Link>
           <div className="flex items-center gap-5">
@@ -987,7 +987,7 @@ export default function Home() {
       {/* ── FOOTER ── */}
       <footer className="border-t border-[#e7e5e4] bg-[#fafaf9]">
         <div className="mx-auto flex max-w-[1140px] flex-wrap items-center justify-between gap-4 px-8 py-8">
-          <Link href="/" className="inline-flex" aria-label="CREWDEV — accueil">
+          <Link href="/" className="inline-flex" aria-label="Fortyn — accueil">
             <BrandLogo size="sm" />
           </Link>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-slate-600">

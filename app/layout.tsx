@@ -15,7 +15,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "CREWDEV",
+  title: "Fortyn",
   description: "Audit digital et accompagnement produit pour PME.",
 };
 

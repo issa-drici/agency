@@ -18,7 +18,7 @@ export function BrandLogo({ size = "md", className = "", priority = false }: Bra
   return (
     <Image
       src="/images/logo.png"
-      alt="CREWDEV"
+      alt="Fortyn"
       width={s.width}
       height={s.height}
       className={`${s.className} w-auto object-contain object-left ${className}`.trim()}

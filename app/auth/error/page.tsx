@@ -59,7 +59,7 @@ export default async function AuthErrorPage({ searchParams }: PageProps) {
         <div className="flex justify-center">
           <section className="w-full max-w-[420px] rounded-xl border border-stone-200 bg-white p-6 sm:p-10">
             <div className="mb-8 flex items-center gap-3">
-              <Link href="/" className="inline-flex items-center gap-3" aria-label="CREWDEV — accueil">
+              <Link href="/" className="inline-flex items-center gap-3" aria-label="Fortyn — accueil">
                 <BrandLogo size="md" priority />
                 <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-sky-500/80" />
               </Link>
