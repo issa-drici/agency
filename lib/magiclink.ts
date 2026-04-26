@@ -1,8 +1,6 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { prisma } from "@/lib/db";
-import { WHATSAPP_FROM, twilioClient } from "@/lib/twilio";
 
-/** Même algorithme que `next-auth/core/lib/utils` (`hashToken`). */
 function hashVerificationToken(token: string): string {
   const secret = process.env.NEXTAUTH_SECRET;
   if (!secret) {
@@ -13,6 +11,10 @@ function hashVerificationToken(token: string): string {
 
 function normalizePhone(phone: string): string {
   return phone.trim();
+}
+
+function normalizePhoneForMetaTo(phone: string): string {
+  return normalizePhone(phone).replace(/^\+/, "");
 }
 
 function syntheticEmailForPhone(phone: string): string {
@@ -49,18 +51,60 @@ export async function generateMagicLink(phone: string): Promise<string> {
     },
   });
 
-  const baseUrl = (process.env.NEXTAUTH_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const baseUrl = (process.env.NEXTAUTH_URL ?? "http://localhost:3000").replace(
+    /\/$/,
+    "",
+  );
   return `${baseUrl}/api/auth/callback/email?token=${encodeURIComponent(token)}&email=${encodeURIComponent(identifier)}`;
 }
 
-export async function sendMagicLinkWhatsApp(phone: string): Promise<void> {
-  const magicLink = await generateMagicLink(phone);
-  const normalized = normalizePhone(phone);
-  await twilioClient.messages.create({
-    from: WHATSAPP_FROM,
-    to: `whatsapp:${normalized}`,
-    body:
-      "Votre audit est prêt 🎉\n\nAccédez à votre espace ici (lien valable 24h) :\n" +
-      magicLink,
+export async function sendMagicLinkWhatsApp(
+  phone: string,
+  precomputedMagicLink?: string,
+): Promise<string> {
+  const magicLink = precomputedMagicLink ?? (await generateMagicLink(phone));
+  const to = normalizePhoneForMetaTo(phone);
+  const token = process.env.META_WHATSAPP_TOKEN;
+  const phoneNumberId = process.env.META_PHONE_NUMBER_ID;
+
+  if (!token) {
+    throw new Error(
+      "META_WHATSAPP_TOKEN est requis pour envoyer le magic link WhatsApp.",
+    );
+  }
+  if (!phoneNumberId) {
+    throw new Error(
+      "META_PHONE_NUMBER_ID est requis pour envoyer le magic link WhatsApp.",
+    );
+  }
+
+  const url = `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`;
+  const payload = {
+    messaging_product: "whatsapp",
+    to,
+    type: "text",
+    text: {
+      body:
+        "Votre audit est pret !\n\nAccedez a votre espace ici (lien valable 24h) :\n" +
+        magicLink,
+    },
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
   });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Echec envoi magic link Meta WhatsApp (${response.status}): ${errorBody}`,
+    );
+  }
+
+  return magicLink;
 }

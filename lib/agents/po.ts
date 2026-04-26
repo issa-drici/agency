@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { randomUUID } from "node:crypto";
-import { sendMagicLinkWhatsApp } from "@/lib/magiclink";
 import { prisma } from "@/lib/db";
+import { generateMagicLink, sendMagicLinkWhatsApp } from "@/lib/magiclink";
 
 /** Aligné sur `agents/po.py` (référence Python). */
 const SYSTEM_PROMPT = `Tu es le Product Owner de Fortyn, une agence de développement ultra-rapide propulsée par IA.
@@ -28,13 +28,25 @@ DÉROULÉ DE LA CONVERSATION :
    essentiel pour lancer versus ce qui peut venir ensuite. Tu dis "pour démarrer" et
    "dans un second temps", jamais "MVP" ou "V2".
 
-6. Tu ne génères pas d'audit, de roadmap ni de document. Tu collectes les besoins et crées
+6. Lors de la collecte des besoins, tu dois toujours demander explicitement quels sont
+   TOUS les champs et informations nécessaires au processus, sans les déduire toi-même.
+   Par exemple : "Quels sont tous les champs obligatoires que vous devez avoir pour
+   traiter une demande ?" plutôt que de supposer depuis les informations manquantes citées.
+
+7. Dans ton récapitulatif final, tu te limites STRICTEMENT à ce que le client gère
+   lui-même : la collecte des demandes, le suivi, les communications avec ses propres
+   clients. Tu ne promets jamais d'automatiser ou d'interfacer avec des systèmes
+   externes (sites gouvernementaux, portails de visa, APIs tierces) car ce n'est pas
+   dans ton périmètre de collecte. Si le client mentionne un site externe, tu notes
+   juste qu'il existe sans proposer de l'intégrer.
+
+8. Tu ne génères pas d'audit, de roadmap ni de document. Tu collectes les besoins et crées
    des user stories. C'est tout ton périmètre.
 
-7. Tu ne te présentes jamais avec un prénom. Tu ne mentionnes jamais Fortyn ni aucun autre
+9. Tu ne te présentes jamais avec un prénom. Tu ne mentionnes jamais Fortyn ni aucun autre
    produit. Tu représentes uniquement Fortyn.
 
-8. Tu dois continuer la collecte tant qu'il manque des informations critiques pour écrire des
+10. Tu dois continuer la collecte tant qu'il manque des informations critiques pour écrire des
    US fonctionnelles exploitables. Ne fais PAS le récapitulatif final ni "Parfait, je transmets
    à l'équipe !" tant que ces points ne sont pas suffisamment clairs.
 
@@ -201,8 +213,6 @@ async function parseCommands(
   responseText: string,
   clientId: string,
 ): Promise<{ cleanResponse: string; actions: string[] }> {
-  console.log("[PO RAW]", responseText);
-
   const lines = responseText.split("\n");
   const cleanResponse: string[] = [];
   const actions: string[] = [];
@@ -215,7 +225,6 @@ async function parseCommands(
     if (/^\/note\b/i.test(stripped)) {
       const noteContent = stripped.replace(/^\/note\b/i, "").trim();
       if (noteContent) {
-        console.log("[PO NOTE]", noteContent);
         await saveNote(clientId, noteContent);
         actions.push(`Note sauvegardée : ${noteContent}`);
       }
@@ -232,7 +241,6 @@ async function parseCommands(
       }
 
       const usBlock = usBlockLines.join("\n").trim();
-      console.log("[PO US BLOC]", usBlock);
 
       let titre = "";
       let description = "";
@@ -292,10 +300,9 @@ async function parseCommands(
             specsTechniques: "",
             usParentId: null,
           });
-          console.log("[PO US CREATED]", usId);
           actions.push(`US #${usId} créée : [fonctionnelle] ${titre}`);
-        } catch (error) {
-          console.error("[PO US ERROR]", error, parsed);
+        } catch {
+          actions.push(`Echec creation US : ${titre}`);
         }
       }
     } else if (stripped === "/backlog") {
@@ -341,6 +348,10 @@ export async function chat(clientId: string, userMessage: string): Promise<Agent
     throw new Error("ANTHROPIC_API_KEY est requis pour l’agent PO.");
   }
 
+  const existingUsCount = await prisma.userStory.count({
+    where: { clientId },
+  });
+
   await saveMessage(clientId, "user", userMessage);
   const history = await getHistory(clientId, 20);
   const notes = await getNotes(clientId);
@@ -373,13 +384,51 @@ export async function chat(clientId: string, userMessage: string): Promise<Agent
 
   await saveMessage(clientId, "assistant", cleanResponse);
 
-  const finConversation =
+  const hasCreatedUs = actions.some((action) => action.startsWith("US #"));
+  const finConversationExplicite =
     cleanResponse.includes("Parfait, je transmets à l'équipe") ||
     cleanResponse.includes("je transmets à l'équipe");
-  if (finConversation) {
-    void sendMagicLinkWhatsApp(clientId).catch((err) => {
-      console.error("[po] envoi du magic link WhatsApp:", err);
-    });
+  const finConversationImplicite = hasCreatedUs && existingUsCount === 0;
+
+  if (finConversationExplicite || finConversationImplicite) {
+    const isDevMode =
+      process.env.NODE_ENV === "development" ||
+      process.env.CHAT_DEV_MODE === "true";
+    let devMagicLink: string | null = null;
+
+    try {
+      const magicLink = await sendMagicLinkWhatsApp(
+        clientId,
+        devMagicLink ?? undefined,
+      );
+      actions.push("Magic link envoye sur WhatsApp.");
+      if (isDevMode) {
+        if (!devMagicLink) {
+          devMagicLink = magicLink;
+        }
+        actions.push(`Magic link (dev): ${magicLink}`);
+      }
+    } catch (error) {
+      const reason =
+        error instanceof Error ? error.message : "erreur inconnue";
+      actions.push(`Echec envoi magic link WhatsApp: ${reason}`);
+      if (isDevMode) {
+        try {
+          if (!devMagicLink) {
+            devMagicLink = await generateMagicLink(clientId);
+          }
+          actions.push(`Magic link (dev fallback): ${devMagicLink}`);
+        } catch (fallbackError) {
+          const fallbackReason =
+            fallbackError instanceof Error
+              ? fallbackError.message
+              : "erreur inconnue";
+          actions.push(
+            `Echec generation magic link (dev fallback): ${fallbackReason}`,
+          );
+        }
+      }
+    }
   }
 
   return { response: cleanResponse, actions };
