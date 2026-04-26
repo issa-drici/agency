@@ -68,7 +68,14 @@ EXEMPLE DE MAUVAIS MESSAGE :
 - Vous avez des livreurs ?"
 
 Commandes internes (invisibles pour le client) :
-/note <texte> — sauvegarder une info sur une seule ligne
+/note <clé> | <valeur> — sauvegarder ou mettre à jour une info.
+La clé identifie le sujet (ex: "secteur", "équipe", "problème principal", "volumétrie").
+Si une note avec la même clé existe déjà, elle sera remplacée, pas dupliquée.
+Utilise des clés courtes et stables. Exemples :
+/note secteur | industriel et logistique
+/note équipe | 2 personnes - founder + commercial
+/note problème | identifier entreprises cibles
+/note volumétrie | 700 entreprises/semaine, taux conversion 0.7%
 
 /us
 TITRE: <titre court et précis>
@@ -169,7 +176,66 @@ async function getHistory(clientId: string, limit = 20) {
   return rows.reverse();
 }
 
-async function saveNote(clientId: string, contenu: string): Promise<void> {
+const NOTE_KEY_VALUE_SEP = " | ";
+
+/** Sans séparateur ` | ` : création simple (comportement historique). Avec : upsert par clé + clientId. */
+async function saveNote(
+  clientId: string,
+  rawContent: string,
+): Promise<{ kind: "created" | "updated"; summary: string }> {
+  const trimmed = rawContent.trim();
+  const sepIdx = trimmed.indexOf(NOTE_KEY_VALUE_SEP);
+
+  if (sepIdx === -1) {
+    await prisma.notePO.create({
+      data: {
+        id: randomUUID(),
+        clientId,
+        contenu: trimmed,
+      },
+    });
+    return { kind: "created", summary: trimmed };
+  }
+
+  const cle = trimmed.slice(0, sepIdx).trim();
+  const valeur = trimmed.slice(sepIdx + NOTE_KEY_VALUE_SEP.length).trim();
+  if (!cle) {
+    await prisma.notePO.create({
+      data: {
+        id: randomUUID(),
+        clientId,
+        contenu: trimmed,
+      },
+    });
+    return { kind: "created", summary: trimmed };
+  }
+
+  const contenu = `${cle}${NOTE_KEY_VALUE_SEP}${valeur}`;
+  const prefix = `${cle}${NOTE_KEY_VALUE_SEP}`;
+
+  const existing = await prisma.notePO.findFirst({
+    where: {
+      clientId,
+      contenu: { startsWith: prefix },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (existing) {
+    await prisma.notePO.update({
+      where: { id: existing.id },
+      data: { contenu },
+    });
+    await prisma.notePO.deleteMany({
+      where: {
+        clientId,
+        id: { not: existing.id },
+        contenu: { startsWith: prefix },
+      },
+    });
+    return { kind: "updated", summary: contenu };
+  }
+
   await prisma.notePO.create({
     data: {
       id: randomUUID(),
@@ -177,6 +243,7 @@ async function saveNote(clientId: string, contenu: string): Promise<void> {
       contenu,
     },
   });
+  return { kind: "created", summary: contenu };
 }
 
 async function getNotes(clientId: string) {
@@ -233,8 +300,12 @@ async function parseCommands(
     if (/^\/note\b/i.test(stripped)) {
       const noteContent = stripped.replace(/^\/note\b/i, "").trim();
       if (noteContent) {
-        await saveNote(clientId, noteContent);
-        actions.push(`Note sauvegardée : ${noteContent}`);
+        const { kind, summary } = await saveNote(clientId, noteContent);
+        actions.push(
+          kind === "updated"
+            ? `Note mise à jour : ${summary}`
+            : `Note sauvegardée : ${summary}`,
+        );
       }
       i += 1;
     } else if (/^\/us\b/i.test(stripped)) {
@@ -402,38 +473,54 @@ export async function chat(clientId: string, userMessage: string): Promise<Agent
     const isDevMode =
       process.env.NODE_ENV === "development" ||
       process.env.CHAT_DEV_MODE === "true";
-    let devMagicLink: string | null = null;
+    /** Script `pnpm chat` : pas d'appel Graph Meta (token / WhatsApp hors scope dev). */
+    const skipWhatsAppMagicLink = process.env.CHAT_DEV_MODE === "true";
 
-    try {
-      const magicLink = await sendMagicLinkWhatsApp(
-        clientId,
-        devMagicLink ?? undefined,
-      );
-      actions.push("Magic link envoye sur WhatsApp.");
-      if (isDevMode) {
-        if (!devMagicLink) {
-          devMagicLink = magicLink;
-        }
-        actions.push(`Magic link (dev): ${magicLink}`);
+    if (skipWhatsAppMagicLink) {
+      try {
+        const magicLink = await generateMagicLink(clientId);
+        actions.push(
+          `Magic link (dev, envoi WhatsApp ignore — reactiver quand Meta est OK) : ${magicLink}`,
+        );
+      } catch (error) {
+        const reason =
+          error instanceof Error ? error.message : "erreur inconnue";
+        actions.push(`Echec generation magic link: ${reason}`);
       }
-    } catch (error) {
-      const reason =
-        error instanceof Error ? error.message : "erreur inconnue";
-      actions.push(`Echec envoi magic link WhatsApp: ${reason}`);
-      if (isDevMode) {
-        try {
+    } else {
+      let devMagicLink: string | null = null;
+
+      try {
+        const magicLink = await sendMagicLinkWhatsApp(
+          clientId,
+          devMagicLink ?? undefined,
+        );
+        actions.push("Magic link envoye sur WhatsApp.");
+        if (isDevMode) {
           if (!devMagicLink) {
-            devMagicLink = await generateMagicLink(clientId);
+            devMagicLink = magicLink;
           }
-          actions.push(`Magic link (dev fallback): ${devMagicLink}`);
-        } catch (fallbackError) {
-          const fallbackReason =
-            fallbackError instanceof Error
-              ? fallbackError.message
-              : "erreur inconnue";
-          actions.push(
-            `Echec generation magic link (dev fallback): ${fallbackReason}`,
-          );
+          actions.push(`Magic link (dev): ${magicLink}`);
+        }
+      } catch (error) {
+        const reason =
+          error instanceof Error ? error.message : "erreur inconnue";
+        actions.push(`Echec envoi magic link WhatsApp: ${reason}`);
+        if (isDevMode) {
+          try {
+            if (!devMagicLink) {
+              devMagicLink = await generateMagicLink(clientId);
+            }
+            actions.push(`Magic link (dev fallback): ${devMagicLink}`);
+          } catch (fallbackError) {
+            const fallbackReason =
+              fallbackError instanceof Error
+                ? fallbackError.message
+                : "erreur inconnue";
+            actions.push(
+              `Echec generation magic link (dev fallback): ${fallbackReason}`,
+            );
+          }
         }
       }
     }
