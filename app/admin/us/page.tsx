@@ -12,7 +12,7 @@ export default function AdminUsPage() {
   const [statut, setStatut] = useState("");
   const [search, setSearch] = useState({ q: "", statut: "" });
 
-  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin-us", search.q, search.statut],
     queryFn: () => fetchAdminUsList(search.q, search.statut),
     refetchInterval: 10_000,
@@ -25,24 +25,10 @@ export default function AdminUsPage() {
 
   return (
     <main className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold">User stories</h2>
-        <button
-          type="button"
-          onClick={() => void refetch()}
-          className="rounded-md border border-stone-200 bg-stone-50 px-3 py-1.5 text-sm text-slate-700 hover:bg-stone-100"
-        >
-          {isFetching ? "Rafraichissement..." : "Rafraichir"}
-        </button>
-      </div>
+      <h2 className="text-lg font-semibold">User stories</h2>
       <p className="mt-1 text-sm text-slate-600">
         Recherche rapide et acces detail de chaque US.
       </p>
-      {data ? (
-        <p className="mt-1 text-xs text-slate-500">
-          Derniere MAJ: {new Date(data.refreshedAt).toLocaleString("fr-FR")}
-        </p>
-      ) : null}
 
       <form
         onSubmit={onSubmit}

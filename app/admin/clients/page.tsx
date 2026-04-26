@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchAdminClients } from "@/services/admin/clients";
 
 export default function AdminClientsPage() {
-  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin-clients"],
     queryFn: fetchAdminClients,
     refetchInterval: 10_000,
@@ -13,24 +13,10 @@ export default function AdminClientsPage() {
 
   return (
     <main className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold">Clients</h2>
-        <button
-          type="button"
-          onClick={() => void refetch()}
-          className="rounded-md border border-stone-200 bg-stone-50 px-3 py-1.5 text-sm text-slate-700 hover:bg-stone-100"
-        >
-          {isFetching ? "Rafraichissement..." : "Rafraichir"}
-        </button>
-      </div>
+      <h2 className="text-lg font-semibold">Clients</h2>
       <p className="mt-1 text-sm text-slate-600">
         Liste des prospects avec acces direct a leur conversation complete.
       </p>
-      {data ? (
-        <p className="mt-1 text-xs text-slate-500">
-          Derniere MAJ: {new Date(data.refreshedAt).toLocaleString("fr-FR")}
-        </p>
-      ) : null}
 
       <div className="mt-4 overflow-x-auto">
         <table className="min-w-full border-separate border-spacing-y-2">
