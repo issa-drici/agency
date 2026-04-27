@@ -4,12 +4,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { LoginForm } from "@/app/login/LoginForm";
 import { BrandLogo } from "@/components/atoms/BrandLogo";
+import { prisma } from "@/lib/db/client";
 
 export default async function LoginPage() {
   const session = await getServerSession(authOptions);
 
-  if (session?.user) {
-    redirect("/dashboard");
+  /** Même critère que le dashboard : évite la boucle /login ↔ /dashboard si le JWT est orphelin. */
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+    if (user) {
+      redirect("/dashboard");
+    }
   }
 
   return (

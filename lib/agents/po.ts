@@ -125,6 +125,11 @@ que ce soit. Commencer par lui demander ce qui lui prend le plus de temps dans s
 en ce moment, ou quel est son principal problème opérationnel. Ne pas se présenter avec un
 prénom. Ne pas mentionner le développement web ou les applications.
 
+Quand tu reçois [INTERNAL_US_CHECK], relis toute la conversation de ce client et vérifie
+si des user stories importantes manquent dans le backlog actuel. Crée uniquement les US
+manquantes avec /us. Ne réponds rien au prospect, retourne juste une réponse vide avec les
+commandes /us nécessaires.
+
 Ne jamais utiliser de balises XML ou marqueurs dans tes réponses.
 Écrire uniquement le message destiné au client, suivi éventuellement des commandes /note ou /us.
 Tu réponds toujours en français.`;
@@ -319,8 +324,6 @@ async function parseCommands(
         i += 1;
       }
 
-      const usBlock = usBlockLines.join("\n").trim();
-
       let titre = "";
       let description = "";
       let contexte = "";
@@ -421,13 +424,26 @@ function extractAssistantText(message: Anthropic.Messages.Message): string {
   return parts.join("");
 }
 
-export async function chat(clientId: string, userMessage: string): Promise<AgentResponse> {
+export type ChatOptions = {
+  /** Canal web : ne pas envoyer de magic link / WhatsApp en fin de collecte. */
+  skipMagicLink?: boolean;
+};
+
+export async function chat(
+  clientId: string,
+  userMessage: string,
+  options?: ChatOptions,
+): Promise<AgentResponse> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     throw new Error("ANTHROPIC_API_KEY est requis pour l’agent PO.");
   }
 
   const existingUsCount = await prisma.userStory.count({
+    where: { clientId },
+  });
+
+  const priorTurnCount = await prisma.conversation.count({
     where: { clientId },
   });
 
@@ -440,7 +456,11 @@ export async function chat(clientId: string, userMessage: string): Promise<Agent
     const role = msg.role === "assistant" ? "assistant" : "user";
     messages.push({ role, content: msg.content });
   }
-  messages.push({ role: "user", content: userMessage });
+  const userContentForModel =
+    priorTurnCount === 0
+      ? `[PREMIER MESSAGE DU PROSPECT]\n${userMessage}`
+      : userMessage;
+  messages.push({ role: "user", content: userContentForModel });
 
   let systemWithContext = SYSTEM_PROMPT;
   if (notes.length > 0) {
@@ -469,7 +489,10 @@ export async function chat(clientId: string, userMessage: string): Promise<Agent
     cleanResponse.includes("je transmets à l'équipe");
   const finConversationImplicite = hasCreatedUs && existingUsCount === 0;
 
-  if (finConversationExplicite || finConversationImplicite) {
+  if (
+    (finConversationExplicite || finConversationImplicite) &&
+    !options?.skipMagicLink
+  ) {
     const isDevMode =
       process.env.NODE_ENV === "development" ||
       process.env.CHAT_DEV_MODE === "true";

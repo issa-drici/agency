@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { fetchAdminClientDetail } from "@/services/admin/client-detail";
 
 function roleUi(role: string): { label: string; align: "left" | "right"; bubble: string } {
@@ -23,12 +24,50 @@ function roleUi(role: string): { label: string; align: "left" | "right"; bubble:
 export default function AdminClientDetailPage() {
   const params = useParams<{ clientId: string }>();
   const clientId = params?.clientId ? decodeURIComponent(params.clientId) : "";
+  const [isCheckingUs, setIsCheckingUs] = useState(false);
+  const [checkResult, setCheckResult] = useState<string[] | null>(null);
+  const [checkError, setCheckError] = useState<string | null>(null);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin-client-detail", clientId],
     queryFn: () => fetchAdminClientDetail(clientId),
     enabled: Boolean(clientId),
     refetchInterval: 10_000,
   });
+
+  async function handleUsCheck() {
+    if (!clientId || isCheckingUs) return;
+    const provided = window.prompt("ADMIN_SECRET (pour verifier les US manquantes) :");
+    const adminSecret = provided?.trim() ?? "";
+    if (!adminSecret) return;
+
+    setIsCheckingUs(true);
+    setCheckResult(null);
+    setCheckError(null);
+
+    try {
+      const response = await fetch("/api/agent/us-check", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${adminSecret}`,
+        },
+        body: JSON.stringify({ clientId }),
+      });
+
+      const json = (await response.json()) as
+        | { actions?: string[]; error?: string }
+        | undefined;
+      if (!response.ok) {
+        setCheckError(json?.error ?? "Echec verification US.");
+        return;
+      }
+      setCheckResult(json?.actions ?? []);
+    } catch {
+      setCheckError("Erreur reseau pendant la verification des US.");
+    } finally {
+      setIsCheckingUs(false);
+    }
+  }
 
   return (
     <main className="space-y-4">
@@ -45,13 +84,46 @@ export default function AdminClientDetailPage() {
               {isLoading ? "Chargement..." : data?.clientId}
             </h2>
           </div>
-          <Link
-            href="/admin/clients"
-            className="rounded-md border border-stone-200 bg-stone-50 px-3 py-1.5 text-sm hover:bg-stone-100"
-          >
-            Retour liste clients
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => void handleUsCheck()}
+              disabled={!clientId || isCheckingUs}
+              className="rounded-md border border-violet-200 bg-violet-50 px-3 py-1.5 text-sm text-violet-800 hover:bg-violet-100 disabled:opacity-60"
+            >
+              {isCheckingUs ? "Verification..." : "Verifier US manquantes"}
+            </button>
+            {clientId ? (
+              <a
+                href={`/api/admin/clients/${encodeURIComponent(clientId)}/export`}
+                className="rounded-md bg-sky-600 px-3 py-1.5 text-sm text-white hover:bg-sky-500"
+              >
+                Export PDF
+              </a>
+            ) : null}
+            <Link
+              href="/admin/clients"
+              className="rounded-md border border-stone-200 bg-stone-50 px-3 py-1.5 text-sm hover:bg-stone-100"
+            >
+              Retour liste clients
+            </Link>
+          </div>
         </div>
+        {checkError ? (
+          <p className="mt-2 text-sm text-red-700">{checkError}</p>
+        ) : checkResult ? (
+          <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-sm text-emerald-800">
+            {checkResult.length === 0 ? (
+              <p>Aucune action: aucune US manquante detectee.</p>
+            ) : (
+              <ul className="space-y-1">
+                {checkResult.map((action, idx) => (
+                  <li key={`${idx}-${action}`}>• {action}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : null}
       </header>
 
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">

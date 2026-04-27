@@ -13,17 +13,17 @@ export default async function AuditPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fafaf9] text-slate-900">
-      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <Link href="/" className="inline-flex" aria-label="Fortyn — accueil">
-            <BrandLogo size="md" />
-          </Link>
-          <ButtonLink href="/dashboard" variant="textMuted" size="inline">
-            ← Tableau de bord
-          </ButtonLink>
-        </div>
+    <>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 lg:hidden">
+        <Link href="/" className="inline-flex" aria-label="Fortyn — accueil">
+          <BrandLogo size="md" />
+        </Link>
+        <ButtonLink href="/dashboard" variant="textMuted" size="inline">
+          ← Tableau de bord
+        </ButtonLink>
+      </div>
 
+      <div className="mx-auto max-w-3xl">
         <h1 className="font-serif text-3xl text-[#0c1322]">Audit métier</h1>
         <p className="mt-2 text-sm text-slate-600">Synthèse de votre maturité digitale et opérationnelle.</p>
 
@@ -73,6 +73,6 @@ export default async function AuditPage() {
           </ul>
         </section>
       </div>
-    </main>
+    </>
   );
 }
